@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.webxert.listeningsouls.fragments.ChatFragment;
 import com.webxert.listeningsouls.fragments.StarredFragment;
 import com.webxert.listeningsouls.fragments.StoriesFragment;
+import com.webxert.listeningsouls.fragments.UserChatFragment;
 
 /**
  * Created by hp on 12/9/2018.
@@ -21,7 +22,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         switch (i) {
             case 0:
-                return ChatFragment.getmInstance();
+                return UserChatFragment.getInstance();
             case 1:
                 return StarredFragment.getmInstance();
 
@@ -32,7 +33,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Nullable
@@ -40,11 +41,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "AdminChats";
-            case 1:
                 return "CustomerChats";
-            default:
+            case 1:
                 return "AdminChats";
+            default:
+                return "CustomerChats";
         }
     }
 }

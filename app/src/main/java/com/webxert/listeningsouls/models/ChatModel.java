@@ -1,46 +1,34 @@
 package com.webxert.listeningsouls.models;
 
 /**
- * Created by hp on 12/10/2018.
+ * Created by hp on 12/18/2018.
  */
 
-
 public class ChatModel {
-
-    String email;
-    String view_type;
-    String message;
+    String with;
+    String id;
 
     public ChatModel() {
     }
 
-    public ChatModel(String email, String view_type, String message) {
-        this.email = email;
-        this.view_type = view_type;
-        this.message = message;
+    public ChatModel(String with, String id) {
+        this.with = with;
+        this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getWith() {
+        return with;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setWith(String with) {
+        this.with = with;
     }
 
-    public String getView_type() {
-        return view_type;
+    public String getId() {
+        return id;
     }
 
-    public void setView_type(String view_type) {
-        this.view_type = view_type;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setId(String id) {
+        this.id = id;
     }
 }

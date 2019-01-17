@@ -1,5 +1,6 @@
 package com.webxert.listeningsouls;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.webxert.listeningsouls.common.Constants;
 import com.webxert.listeningsouls.models.User;
+import com.webxert.listeningsouls.utils.Utils;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -45,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
         name = findViewById(R.id.name);
         is_admin = findViewById(R.id.is_admin);
 
+
         m_auth = FirebaseAuth.getInstance();
         db_ref = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -54,6 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final ProgressDialog progressDialog = Utils.getRegisterationDialog(RegisterActivity.this);
                 if (!TextUtils.isEmpty(email.getText().toString()) && !TextUtils.isEmpty(password.getText().toString()) &&
                         !TextUtils.isEmpty(name.getText().toString())) {
 
@@ -65,22 +69,22 @@ public class RegisterActivity extends AppCompatActivity {
                         builder.setTitle("Authentication!");
                         builder.setMessage("Enter secret key if you are a team member");
                         final EditText editText = new EditText(RegisterActivity.this);
-
                         builder.setView(editText);
 
                         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(final DialogInterface dialog, int which) {
                                 if (editText.getText().toString().equals(Constants.DOMAIN_NAME)) {
                                     writer.putString(Constants.AUTH_, Constants.Authentication.ADMIN.name());
                                     writer.putBoolean(Constants.LOGIN_, true);
                                     writer.putString(Constants.USER_EMAIL, email.getText().toString());
                                     writer.putString(Constants.USER_NAME, name.getText().toString());
                                     writer.apply();
+                                    progressDialog.show();
                                     m_auth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                         @Override
                                         public void onSuccess(AuthResult authResult) {
-
+                                            progressDialog.dismiss();
                                             User user = new User(authResult.getUser().getUid(), email.getText().toString(), name.getText().toString(), password.getText().toString(), "123", true);
                                             db_ref.child(authResult.getUser().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -93,6 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
+                                                    progressDialog.dismiss();
                                                     Log.e(RegisterActivity.class.getSimpleName(), e.getMessage());
                                                 }
                                             });
@@ -101,6 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
+                                            progressDialog.dismiss();
                                             Log.e(RegisterActivity.class.getSimpleName(), e.getMessage());
 
                                         }
@@ -109,6 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 } else {
                                     dialog.dismiss();
+                                    progressDialog.dismiss();
                                     resetFields();
                                     Toast.makeText(RegisterActivity.this, "Your secret key is wrong!!!", Toast.LENGTH_LONG).show();
                                 }
@@ -117,7 +124,8 @@ public class RegisterActivity extends AppCompatActivity {
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                dialog.dismiss();
+                                progressDialog.dismiss();
                             }
                         });
 
@@ -125,9 +133,11 @@ public class RegisterActivity extends AppCompatActivity {
 
                     } else {
 
+                        progressDialog.show();
                         m_auth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
+                                progressDialog.dismiss();
                                 writer.putString(Constants.AUTH_, Constants.Authentication.CUSTOMER.name());
                                 writer.putBoolean(Constants.LOGIN_, true);
                                 writer.putString(Constants.USER_EMAIL, email.getText().toString());
@@ -145,6 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+                                        progressDialog.dismiss();
                                         Log.e(RegisterActivity.class.getSimpleName(), e.getMessage());
                                     }
                                 });
@@ -153,6 +164,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
                                 Log.e(RegisterActivity.class.getSimpleName(), e.getMessage());
 
                             }

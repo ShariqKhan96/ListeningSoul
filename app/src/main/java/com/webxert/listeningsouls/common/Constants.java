@@ -1,5 +1,9 @@
 package com.webxert.listeningsouls.common;
 
+import com.webxert.listeningsouls.models.User;
+
+import java.util.ArrayList;
+
 /**
  * Created by hp on 12/10/2018.
  */
@@ -8,6 +12,7 @@ public class Constants {
     public enum Authentication {
         CUSTOMER, ADMIN
     }
+    public static ArrayList<User> usersList;
 
     public static final String CUSTOMER_AUTH = "CUSTOMER";
     public static final String ADMIN_AUTH = "ADMIN";
